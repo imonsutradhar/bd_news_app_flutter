@@ -4,9 +4,9 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'news_details.dart';
 
+// ক্লাসের নাম অবশ্যই 'NewsPage' হতে হবে
 class NewsPage extends StatefulWidget {
-  final String query; // Ei variable ta category-r nam nibe (e.g., "sports")
-
+  final String query;
   const NewsPage({super.key, required this.query});
 
   @override
@@ -23,23 +23,41 @@ class _NewsPageState extends State<NewsPage> {
     fetchNews();
   }
 
+  // যদি ক্যাটাগরি চেঞ্জ হয়, তাহলে আবার নিউজ লোড হবে
+  @override
+  void didUpdateWidget(covariant NewsPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.query != widget.query) {
+      fetchNews();
+    }
+  }
+
   Future<void> fetchNews() async {
+    setState(() {
+      isLoading = true;
+    });
     String apiKey = "bb2ef55792da40dc928077f131bc5517";
-    // Ekhane 'widget.query' use korchi jate alada category search kora jay
     String url = "https://newsapi.org/v2/everything?q=${widget.query}&sortBy=publishedAt&apiKey=$apiKey";
 
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         var decodedData = jsonDecode(response.body);
-        if (mounted) { // Page close hole jeno error na dey
+        if (mounted) {
           setState(() {
             articles = decodedData['articles'];
             isLoading = false;
           });
         }
+      } else {
+        setState(() {
+          isLoading = false;
+        });
       }
     } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
       print("Error: $e");
     }
   }
@@ -47,45 +65,49 @@ class _NewsPageState extends State<NewsPage> {
   @override
   Widget build(BuildContext context) {
     return isLoading
-        ? const Center(child: CircularProgressIndicator())
-        : ListView.builder(
-      itemCount: articles.length,
-      itemBuilder: (context, index) {
-        final article = articles[index];
-        return InkWell(
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => NewsDetailsScreen(article: article)));
-          },
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(15),
-              boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.3), blurRadius: 5, spreadRadius: 2, offset: const Offset(0, 3))],
+        ? const Center(child: CircularProgressIndicator(color: Colors.redAccent))
+        : RefreshIndicator(
+      onRefresh: fetchNews,
+      color: Colors.redAccent,
+      child: ListView.builder(
+        itemCount: articles.length,
+        itemBuilder: (context, index) {
+          final article = articles[index];
+          return InkWell(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => NewsDetailsScreen(article: article)));
+            },
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.3), blurRadius: 5, spreadRadius: 2, offset: const Offset(0, 3))],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ClipRRect(
+                    borderRadius: const BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
+                    child: article['urlToImage'] != null
+                        ? CachedNetworkImage(
+                      imageUrl: article['urlToImage'],
+                      height: 200, width: double.infinity, fit: BoxFit.cover,
+                      placeholder: (context, url) => Container(height: 200, color: Colors.grey[200]),
+                      errorWidget: (context, url, error) => const Icon(Icons.broken_image),
+                    )
+                        : Container(height: 200, color: Colors.grey[200], child: const Icon(Icons.image)),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Text(article['title'] ?? "No Title", maxLines: 2, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  ),
+                ],
+              ),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ClipRRect(
-                  borderRadius: const BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
-                  child: article['urlToImage'] != null
-                      ? CachedNetworkImage(
-                    imageUrl: article['urlToImage'],
-                    height: 200, width: double.infinity, fit: BoxFit.cover,
-                    placeholder: (context, url) => Container(height: 200, color: Colors.grey[200]),
-                    errorWidget: (context, url, error) => const Icon(Icons.broken_image),
-                  )
-                      : Container(height: 200, color: Colors.grey[200], child: const Icon(Icons.image)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Text(article['title'] ?? "No Title", maxLines: 2, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
