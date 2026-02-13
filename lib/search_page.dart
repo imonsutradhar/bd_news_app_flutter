@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'news_page.dart'; // NewsPage কে রি-ইউজ করছি
+import 'news_page.dart'; // NewsPage-কে ডাকছি
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -12,6 +12,17 @@ class _SearchPageState extends State<SearchPage> {
   TextEditingController searchController = TextEditingController();
   String searchText = "";
 
+  // সার্চ শুরু করার ফাংশন
+  void triggerSearch() {
+    if (searchController.text.isNotEmpty) {
+      setState(() {
+        searchText = searchController.text;
+      });
+      // সার্চ করার পর কিবোর্ড হাইড করে দেবে
+      FocusScope.of(context).unfocus();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +34,7 @@ class _SearchPageState extends State<SearchPage> {
       ),
       body: Column(
         children: [
-          // 🔍 সার্চ বার (যেখানে লিখবে)
+          // 🔍 সার্চ বার
           Container(
             padding: const EdgeInsets.all(10),
             color: Colors.redAccent,
@@ -31,10 +42,11 @@ class _SearchPageState extends State<SearchPage> {
               controller: searchController,
               style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
-                hintText: "Type here (e.g. Bitcoin, Messi)...",
+                hintText: "Search here (e.g. Messi, Bitcoin)...",
                 hintStyle: const TextStyle(color: Colors.white70),
-                prefixIcon: const Icon(Icons.search, color: Colors.white),
-                suffixIcon: IconButton(
+
+                // ক্লিয়ার বাটন (লেখা মোছার জন্য)
+                prefixIcon: IconButton(
                   icon: const Icon(Icons.clear, color: Colors.white),
                   onPressed: () {
                     searchController.clear();
@@ -43,6 +55,13 @@ class _SearchPageState extends State<SearchPage> {
                     });
                   },
                 ),
+
+                // সার্চ বাটন (ক্লিক করলে সার্চ হবে)
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.search, color: Colors.white, size: 30),
+                  onPressed: triggerSearch, // এখানে ক্লিক করলে সার্চ হবে
+                ),
+
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                   borderSide: BorderSide.none,
@@ -50,30 +69,26 @@ class _SearchPageState extends State<SearchPage> {
                 filled: true,
                 fillColor: Colors.white.withOpacity(0.2),
               ),
-              onSubmitted: (value) {
-                // এন্টার চাপলে সার্চ শুরু হবে
-                setState(() {
-                  searchText = value;
-                });
-              },
+              // কিবোর্ডের এন্টার চাপলেও সার্চ হবে
+              onSubmitted: (value) => triggerSearch(),
             ),
           ),
 
-          // 👇 রেজাল্ট দেখানো (NewsPage কে কল করা হচ্ছে)
+          // 👇 রেজাল্ট দেখানো
           Expanded(
             child: searchText.isEmpty
                 ? const Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.search, size: 80, color: Colors.grey),
+                  Icon(Icons.manage_search, size: 100, color: Colors.grey),
                   SizedBox(height: 10),
-                  Text("Search for any news!", style: TextStyle(color: Colors.grey, fontSize: 18)),
+                  Text("Search for any topic...", style: TextStyle(color: Colors.grey, fontSize: 18)),
                 ],
               ),
             )
                 : NewsPage(
-              key: ValueKey(searchText), // কীওয়ার্ড চেঞ্জ হলে রিফ্রেশ হবে
+              key: ValueKey(searchText), // কীওয়ার্ড চেঞ্জ হলে নিউজ রিফ্রেশ হবে
               query: searchText,
             ),
           ),
