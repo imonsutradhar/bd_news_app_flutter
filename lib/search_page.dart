@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'news_page.dart'; // NewsPage-কে ডাকছি
+import 'news_page.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -12,13 +12,11 @@ class _SearchPageState extends State<SearchPage> {
   TextEditingController searchController = TextEditingController();
   String searchText = "";
 
-  // সার্চ শুরু করার ফাংশন
   void triggerSearch() {
     if (searchController.text.isNotEmpty) {
       setState(() {
         searchText = searchController.text;
       });
-      // সার্চ করার পর কিবোর্ড হাইড করে দেবে
       FocusScope.of(context).unfocus();
     }
   }
@@ -34,7 +32,6 @@ class _SearchPageState extends State<SearchPage> {
       ),
       body: Column(
         children: [
-          // 🔍 সার্চ বার
           Container(
             padding: const EdgeInsets.all(10),
             color: Colors.redAccent,
@@ -45,7 +42,6 @@ class _SearchPageState extends State<SearchPage> {
                 hintText: "Search here (e.g. Messi, Bitcoin)...",
                 hintStyle: const TextStyle(color: Colors.white70),
 
-                // ক্লিয়ার বাটন (লেখা মোছার জন্য)
                 prefixIcon: IconButton(
                   icon: const Icon(Icons.clear, color: Colors.white),
                   onPressed: () {
@@ -56,10 +52,9 @@ class _SearchPageState extends State<SearchPage> {
                   },
                 ),
 
-                // সার্চ বাটন (ক্লিক করলে সার্চ হবে)
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.search, color: Colors.white, size: 30),
-                  onPressed: triggerSearch, // এখানে ক্লিক করলে সার্চ হবে
+                  onPressed: triggerSearch,
                 ),
 
                 border: OutlineInputBorder(
@@ -69,12 +64,10 @@ class _SearchPageState extends State<SearchPage> {
                 filled: true,
                 fillColor: Colors.white.withOpacity(0.2),
               ),
-              // কিবোর্ডের এন্টার চাপলেও সার্চ হবে
               onSubmitted: (value) => triggerSearch(),
             ),
           ),
 
-          // 👇 রেজাল্ট দেখানো
           Expanded(
             child: searchText.isEmpty
                 ? const Center(

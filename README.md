@@ -12,9 +12,15 @@
 
 ## 📱 Screenshots
 
-| Home Screen | Categories | News Details |
-|:---:|:---:|:---:|
-| ![Home](https://via.placeholder.com/150) | ![Categories](https://via.placeholder.com/150) | ![Details](https://via.placeholder.com/150) |
+<p align="center">
+  <img src="assets/screenshot/home.jpg" width="220"/>
+  <img src="assets/screenshot/tech.jpg" width="220"/>
+</p>
+
+<p align="center">
+  <img src="assets/screenshot/menu.jpg" width="220"/>
+  <img src="assets/screenshot/details.jpg" width="220"/>
+</p>
 
 ## 🛠 Tech Stack
 
@@ -24,8 +30,3 @@
 - **Image Handling:** `cached_network_image`
 - **Design:** Material Design
 
-## 🚀 How to Run
-
-1. **Clone the repository:**
-   ```bash
-   git clone [https://github.com/imonsutradhar/bd_news_app.git](https://github.com/imonsutradhar/bd_news_app.git)

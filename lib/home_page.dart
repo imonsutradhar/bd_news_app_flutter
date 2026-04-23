@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'news_page.dart';
-import 'search_page.dart'; // <--- এই লাইনটা খুব জরুরি (SearchPage ফাইল থাকতে হবে)
+import 'search_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -10,10 +10,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // শুরুতে ডিফল্ট ক্যাটাগরি
+
   String selectedCategory = "General";
 
-  // ক্যাটাগরি লিস্ট
+  // category list
   final List<String> categories = [
     "General",
     "Business",
@@ -40,7 +40,6 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.redAccent,
         iconTheme: const IconThemeData(color: Colors.white),
 
-        // 👇 এই অংশটা যোগ করা হয়েছে (সার্চ বাটন)
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
@@ -54,7 +53,6 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
 
-      // সাইড মেনু (Drawer)
       drawer: Drawer(
         child: Column(
           children: [
@@ -106,7 +104,6 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
 
-      // বডি
       body: NewsPage(
         key: ValueKey(selectedCategory),
         query: selectedCategory == "General" ? "bangladesh" : selectedCategory,
