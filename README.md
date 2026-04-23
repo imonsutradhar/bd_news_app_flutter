@@ -19,7 +19,7 @@
 
 <p align="center">
   <img src="assets/screenshot/menu.jpg" width="220"/>
-  <img src="assets/screenshot/details.jpg" width="220"/>
+  <img src="assets/screenshot/detalis.jpg" width="220"/>
 </p>
 
 ## 🛠 Tech Stack

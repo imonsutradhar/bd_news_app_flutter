@@ -4,3 +4,5 @@ windows/* linguist-vendored
 linux/* linguist-vendored
 macos/* linguist-vendored
 build/* linguist-vendored
+*.cc linguist-vendored
+*.cmake linguist-vendored
